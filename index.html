@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aiden - Developer Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e14;
+            --bg-secondary: #151921;
+            --bg-tertiary: #1f2430;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #ff6b9d;
+            --accent-tertiary: #c792ea;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+            --shadow: rgba(0, 212, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Darker Grotesque', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, var(--accent-primary) 2px, var(--accent-primary) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, var(--accent-primary) 2px, var(--accent-primary) 4px);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, transparent 100%);
+        }
+
+        .header-content h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), var(--accent-tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header-content p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .admin-link {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.5rem 1.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+
+        .admin-link:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            box-shadow: 0 0 20px var(--shadow);
+        }
+
+        /* Search and Filter Section */
+        .filter-section {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: 'Darker Grotesque', sans-serif;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--shadow);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .clear-filters {
+            padding: 1rem 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .clear-filters:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .tags-container {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .tag-filter {
+            padding: 0.5rem 1.25rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tag-filter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            transition: left 0.5s;
+        }
+
+        .tag-filter:hover::before {
+            left: 100%;
+        }
+
+        .tag-filter:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .tag-filter.active {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s;
+            opacity: 1;
+            animation: fadeInUp 0.6s ease-out;
+            position: relative;
+        }
+
+        .project-card.hidden {
+            display: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            background: var(--bg-tertiary);
+            transition: transform 0.4s;
+        }
+
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--accent-primary);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .project-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--accent-tertiary);
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            border-radius: 12px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-link {
+                position: static;
+                display: inline-block;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <a href="admin.html" class="admin-link">⚙ Admin</a>
+        <div class="header-content">
+            <h1>AIDEN</h1>
+            <p>&lt;developer | creator | problem solver&gt;</p>
+        </div>
+    </header>
+
+    <div class="filter-section">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search projects...">
+            </div>
+            <button class="clear-filters" onclick="clearFilters()">Clear All</button>
+        </div>
+        <div class="tags-container" id="tagsContainer"></div>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid"></div>
+
+    <div class="no-results" id="noResults">
+        No projects found matching your search.
+    </div>
+
+    <footer>
+        <p>© 2025 Aiden. Built with passion and code.</p>
+    </footer>
+
+    <script src="db.js"></script>
+    <script>
+        let allProjects = [];
+        let activeFilters = new Set();
+
+        // Initialize
+        async function init() {
+            await loadProjects();
+            renderProjects();
+            populateTags();
+            setupSearch();
+        }
+
+        // Load projects from database
+        async function loadProjects() {
+            allProjects = await db.getProjects();
+        }
+
+        // Render projects
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            const noResults = document.getElementById('noResults');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            grid.innerHTML = '';
+            let visibleCount = 0;
+
+            allProjects.forEach((project, index) => {
+                const matchesSearch = !searchTerm || 
+                    project.title.toLowerCase().includes(searchTerm) ||
+                    project.description.toLowerCase().includes(searchTerm) ||
+                    project.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+
+                const matchesTags = activeFilters.size === 0 ||
+                    project.tags.some(tag => activeFilters.has(tag));
+
+                if (matchesSearch && matchesTags) {
+                    const card = createProjectCard(project, index);
+                    grid.appendChild(card);
+                    visibleCount++;
+                }
+            });
+
+            noResults.classList.toggle('show', visibleCount === 0);
+        }
+
+        // Create project card
+        function createProjectCard(project, index) {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+            card.style.animationDelay = `${index * 0.1}s`;
+
+            card.innerHTML = `
+                <img src="${project.image}" alt="${project.title}" class="project-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22240%22%3E%3Crect fill=%22%231f2430%22 width=%22400%22 height=%22240%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22monospace%22 font-size=%2220%22 fill=%22%238b949e%22%3ENo Image%3C/text%3E%3C/svg%3E'">
+                <div class="project-content">
+                    <h3 class="project-title">${escapeHtml(project.title)}</h3>
+                    <p class="project-description">${escapeHtml(project.description)}</p>
+                    <div class="project-tags">
+                        ${project.tags.map(tag => `<span class="project-tag">${escapeHtml(tag)}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Populate filter tags
+        function populateTags() {
+            const allTags = new Set();
+            allProjects.forEach(project => {
+                project.tags.forEach(tag => allTags.add(tag));
+            });
+
+            const container = document.getElementById('tagsContainer');
+            container.innerHTML = '';
+
+            Array.from(allTags).sort().forEach(tag => {
+                const tagBtn = document.createElement('button');
+                tagBtn.className = 'tag-filter';
+                tagBtn.textContent = tag;
+                tagBtn.onclick = () => toggleTag(tag, tagBtn);
+                container.appendChild(tagBtn);
+            });
+        }
+
+        // Toggle tag filter
+        function toggleTag(tag, btn) {
+            if (activeFilters.has(tag)) {
+                activeFilters.delete(tag);
+                btn.classList.remove('active');
+            } else {
+                activeFilters.add(tag);
+                btn.classList.add('active');
+            }
+            renderProjects();
+        }
+
+        // Setup search
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', renderProjects);
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            activeFilters.clear();
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.tag-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            renderProjects();
+        }
+
+        // Utility function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>

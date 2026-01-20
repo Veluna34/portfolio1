@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e14;
+            --bg-secondary: #151921;
+            --bg-tertiary: #1f2430;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #ff6b9d;
+            --accent-tertiary: #c792ea;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --border: #30363d;
+            --success: #4ade80;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Darker Grotesque', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 3rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-box h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-box p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Darker Grotesque', sans-serif;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent-primary);
+            border: none;
+            color: var(--bg-primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .header-actions .btn {
+            width: auto;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .panel-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .panel-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-primary);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Darker Grotesque', sans-serif;
+        }
+
+        .tag-input-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag-pill {
+            background: var(--accent-tertiary);
+            color: var(--bg-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tag-pill button {
+            background: none;
+            border: none;
+            color: var(--bg-primary);
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .projects-list {
+            grid-column: 1 / -1;
+        }
+
+        .project-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .project-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .project-item img {
+            width: 100px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            background: var(--bg-secondary);
+        }
+
+        .project-item-content h3 {
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-item-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-item-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .project-item-tags .tag-pill {
+            font-size: 0.75rem;
+            padding: 0.15rem 0.5rem;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .project-actions .btn {
+            width: auto;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .success-message {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .project-item {
+                grid-template-columns: 1fr;
+            }
+
+            .project-actions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <h1>Admin Access</h1>
+            <p>Enter password to manage projects</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter admin password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="error-message" id="loginError" style="display: none;"></div>
+            </form>
+            <p style="margin-top: 2rem; text-align: center;">
+                <a href="index.html" style="color: var(--accent-primary); text-decoration: none;">← Back to Portfolio</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h1>Admin Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                <a href="index.html" class="btn btn-secondary" style="text-decoration: none; text-align: center;">View Site</a>
+            </div>
+        </div>
+
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="dashboard-grid">
+            <!-- Add Project Form -->
+            <div class="panel-section">
+                <h2>Add New Project</h2>
+                <form id="addProjectForm">
+                    <div class="form-group">
+                        <label for="projectTitle">Title *</label>
+                        <input type="text" id="projectTitle" placeholder="Project name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Description *</label>
+                        <textarea id="projectDescription" placeholder="Project description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectImage">Image URL *</label>
+                        <input type="url" id="projectImage" placeholder="https://example.com/image.jpg" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags (Type and press Enter to add) *</label>
+                        <div class="tag-input-container" id="tagContainer"></div>
+                        <input type="text" id="tagInput" placeholder="e.g., React, JavaScript, Node.js (press Enter)">
+                    </div>
+                    <button type="submit" class="btn">Add Project</button>
+                </form>
+            </div>
+
+            <!-- Statistics -->
+            <div class="panel-section">
+                <h2>Statistics</h2>
+                <div style="font-size: 3rem; font-weight: 900; color: var(--accent-primary); margin-bottom: 1rem;">
+                    <span id="projectCount">0</span>
+                </div>
+                <p style="color: var(--text-secondary); font-family: 'JetBrains Mono', monospace;">Total Projects</p>
+                
+                <div style="margin-top: 2rem;">
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--accent-secondary); margin-bottom: 0.5rem;">
+                        <span id="tagCount">0</span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-family: 'JetBrains Mono', monospace;">Unique Tags</p>
+                </div>
+            </div>
+
+            <!-- Projects List -->
+            <div class="panel-section projects-list">
+                <h2>Manage Projects</h2>
+                <div id="projectsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="db.js"></script>
+    <script>
+        // Password (you can change this)
+        const ADMIN_PASSWORD = 'admin123';
+        let currentTags = [];
+        let editingProjectId = null;
+
+        // Check if already logged in
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            showAdminPanel();
+        }
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showAdminPanel();
+            } else {
+                errorEl.textContent = 'Incorrect password. Please try again.';
+                errorEl.style.display = 'block';
+            }
+        });
+
+        // Show admin panel
+        function showAdminPanel() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('adminPanel').classList.add('active');
+            loadProjects();
+            updateStats();
+        }
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            location.reload();
+        }
+
+        // Tag input handling
+        const tagInput = document.getElementById('tagInput');
+        tagInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const tag = tagInput.value.trim();
+                if (tag && !currentTags.includes(tag)) {
+                    currentTags.push(tag);
+                    renderTags();
+                    tagInput.value = '';
+                }
+            }
+        });
+
+        // Render tags
+        function renderTags() {
+            const container = document.getElementById('tagContainer');
+            container.innerHTML = currentTags.map((tag, index) => `
+                <div class="tag-pill">
+                    ${tag}
+                    <button type="button" onclick="removeTag(${index})">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Remove tag
+        function removeTag(index) {
+            currentTags.splice(index, 1);
+            renderTags();
+        }
+
+        // Add project form
+        document.getElementById('addProjectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Validate that at least one tag is added
+            if (currentTags.length === 0) {
+                alert('Please add at least one tag to the project!');
+                return;
+            }
+
+            const project = {
+                title: document.getElementById('projectTitle').value,
+                description: document.getElementById('projectDescription').value,
+                image: document.getElementById('projectImage').value,
+                tags: [...currentTags] // Create a copy of the tags array
+            };
+
+            await db.addProject(project);
+            
+            showSuccess('Project added successfully!');
+            e.target.reset();
+            currentTags = [];
+            renderTags();
+            loadProjects();
+            updateStats();
+        });
+
+        // Load and display projects
+        async function loadProjects() {
+            const projects = await db.getProjects();
+            const container = document.getElementById('projectsList');
+
+            if (projects.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No projects yet. Add your first project above!</p>';
+                return;
+            }
+
+            container.innerHTML = projects.map(project => `
+                <div class="project-item">
+                    <img src="${project.image}" alt="${escapeHtml(project.title)}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2260%22%3E%3Crect fill=%22%23151921%22 width=%22100%22 height=%2260%22/%3E%3C/svg%3E'">
+                    <div class="project-item-content">
+                        <h3>${escapeHtml(project.title)}</h3>
+                        <p>${escapeHtml(project.description)}</p>
+                        <div class="project-item-tags">
+                            ${project.tags.map(tag => `<div class="tag-pill">${escapeHtml(tag)}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div class="project-actions">
+                        <button class="btn btn-danger" onclick="deleteProject(${project.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Delete project
+        async function deleteProject(id) {
+            if (confirm('Are you sure you want to delete this project?')) {
+                await db.deleteProject(id);
+                showSuccess('Project deleted successfully!');
+                loadProjects();
+                updateStats();
+            }
+        }
+
+        // Update statistics
+        async function updateStats() {
+            const projects = await db.getProjects();
+            const allTags = new Set();
+            projects.forEach(p => p.tags.forEach(t => allTags.add(t)));
+
+            document.getElementById('projectCount').textContent = projects.length;
+            document.getElementById('tagCount').textContent = allTags.size;
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const el = document.getElementById('successMessage');
+            el.textContent = message;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
