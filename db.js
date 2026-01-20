@@ -115,7 +115,6 @@ const db = {
             request.onsuccess = () => resolve(request.result);
         });
     },
-
 };
 
 // Initialize database when script loads

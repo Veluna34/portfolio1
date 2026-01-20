@@ -233,6 +233,14 @@
             opacity: 1;
             animation: fadeInUp 0.6s ease-out;
             position: relative;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card.no-link {
+            cursor: default;
         }
 
         .project-card.hidden {
@@ -277,6 +285,14 @@
             font-weight: 700;
             margin-bottom: 0.75rem;
             color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-link-icon {
+            font-size: 1.2rem;
+            opacity: 0.7;
         }
 
         .project-description {
@@ -416,14 +432,22 @@
 
         // Create project card
         function createProjectCard(project, index) {
-            const card = document.createElement('div');
-            card.className = 'project-card';
+            const card = document.createElement(project.url ? 'a' : 'div');
+            card.className = project.url ? 'project-card' : 'project-card no-link';
             card.style.animationDelay = `${index * 0.1}s`;
+            
+            if (project.url) {
+                card.href = project.url;
+                card.target = '_blank';
+                card.rel = 'noopener noreferrer';
+            }
+
+            const linkIcon = project.url ? '<span class="project-link-icon">🔗</span>' : '';
 
             card.innerHTML = `
                 <img src="${project.image}" alt="${project.title}" class="project-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22240%22%3E%3Crect fill=%22%231f2430%22 width=%22400%22 height=%22240%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22monospace%22 font-size=%2220%22 fill=%22%238b949e%22%3ENo Image%3C/text%3E%3C/svg%3E'">
                 <div class="project-content">
-                    <h3 class="project-title">${escapeHtml(project.title)}</h3>
+                    <h3 class="project-title">${escapeHtml(project.title)}${linkIcon}</h3>
                     <p class="project-description">${escapeHtml(project.description)}</p>
                     <div class="project-tags">
                         ${project.tags.map(tag => `<span class="project-tag">${escapeHtml(tag)}</span>`).join('')}
